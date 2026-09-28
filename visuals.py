@@ -4,7 +4,7 @@
 import warnings
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.model_selection import learning_curve, ShuffleSplit, train_test_split
+from sklearn.model_selection import learning_curve, ShuffleSplit, train_test_split, validation_curve
 from sklearn.tree import DecisionTreeRegressor
 
 # Suppress matplotlib user warnings
@@ -19,13 +19,13 @@ def ModelComplexity(X, y):
         The learning and testing errors rates are then plotted. """
     
     # Create 10 cross-validation sets for training and testing
-    cv = ShuffleSplit(X.shape[0], 10, test_size = 0.2, random_state = 0)
-
+    cv = ShuffleSplit(X.shape[0], test_size = 0.2, random_state = 0)
+    #n_iter = 10,
     # Vary the max_depth parameter from 1 to 10
     max_depth = np.arange(1,11)
 
     # Calculate the training and testing scores
-    train_scores, test_scores = cv.validation_curve(DecisionTreeRegressor(), X, y, \
+    train_scores, test_scores = validation_curve(DecisionTreeRegressor(), X, y, \
         param_name = "max_depth", param_range = max_depth, cv = cv, scoring = 'r2')
 
     # Find the mean and standard deviation for smoothing
