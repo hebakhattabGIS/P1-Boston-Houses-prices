@@ -39,13 +39,13 @@ data = load_data()
 # ---------------------------- Sidebar ---------------------------------
 st.sidebar.title("🏠 Home Features")
 
-rm = st.sidebar.slider("Average number of rooms (RM)", 3.0, 9.0, 6.0, 0.1)
+rm = st.sidebar.slider("Average number of rooms (RM)", 3.0, 9.0, 5.0, 1.0)
 lstat = st.sidebar.slider("Neighborhood poverty level (LSTAT %)", 1.0, 40.0, 12.0, 0.5)
 ptratio = st.sidebar.slider("Student-teacher ratio (PTRATIO)", 10.0, 25.0, 18.0, 0.5)
 
 if st.sidebar.button("Predict Home Price", type="primary", use_container_width=True):
     X = pd.DataFrame([[rm, lstat, ptratio]], columns=FEATURES)
-    pred = float(model.predict(X)[0]) * PRICE_SCALE
+    pred = float(model.predict(X)[0])* PRICE_SCALE
     st.session_state["prediction"] = pred
     st.session_state["inputs"] = {"RM": rm, "LSTAT": lstat, "PTRATIO": ptratio}
 

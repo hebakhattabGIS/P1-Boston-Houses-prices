@@ -11,15 +11,15 @@ from sklearn.model_selection import GridSearchCV, ShuffleSplit, train_test_split
 from sklearn.tree import DecisionTreeRegressor
 
 
-def performance_metric(y_true, y_predict):
-    return r2_score(y_true, y_predict)
+def performance_metric(y_test, y_predict):
+    return r2_score(y_test, y_predict)
 
 
 def fit_model(X, y):
     """Grid search over max_depth for a decision tree regressor."""
     # NOTE: the first argument of ShuffleSplit is n_splits in current scikit-learn
     # (in the old API it was the number of samples), so it is named explicitly here.
-    cv_sets = ShuffleSplit(n_splits=10, test_size=0.20, random_state=0)
+    cv_sets = ShuffleSplit(n_splits=5, test_size=0.20, random_state=0)
 
     regressor = DecisionTreeRegressor(random_state=0)
     params = {"max_depth": list(range(1, 11))}
