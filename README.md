@@ -1,3 +1,4 @@
+this project was done as part of AI/ML course, where we explored the boston housing dataset, then built a model to predict house prices using DT. this app is the GUI for this model.
 # p1 for machine learning 
 # this project has two parts:
 # the first part is boston_housing notebook:
