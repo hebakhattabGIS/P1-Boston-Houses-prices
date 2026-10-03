@@ -1,48 +1,40 @@
 """Train the Boston housing decision tree and save it as model.pkl.
 
-Run once (and again whenever you want to retrain):
+Run once (and again whenever you change the settings below):
     python train_model.py
-Needs housing.csv in the same folder.
 """
 import joblib
 import pandas as pd
-from sklearn.metrics import make_scorer, r2_score
-from sklearn.model_selection import GridSearchCV, ShuffleSplit, train_test_split
+from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
 
+# ----------------------------------------------------------------------
+# CONFIG
+# ----------------------------------------------------------------------
+DATA_PATH = "housing.csv"   # columns: RM, LSTAT, PTRATIO, MEDV
+MODEL_PATH = "model.pkl"
+TARGET = "MEDV"
+MAX_DEPTH = 4               # tree depth used for training
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
+# ----------------------------------------------------------------------
 
-def performance_metric(y_test, y_predict):
-    return r2_score(y_test, y_predict)
+data = pd.read_csv(DATA_PATH)
+y = data[TARGET]
+X = data.drop(TARGET, axis=1)  # feature order here must match FEATURES in app.py
 
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE
+)
 
-def fit_model(X, y):
-    """Grid search over max_depth for a decision tree regressor."""
-    # NOTE: the first argument of ShuffleSplit is n_splits in current scikit-learn
-    # (in the old API it was the number of samples), so it is named explicitly here.
-    cv_sets = ShuffleSplit(n_splits=5, test_size=0.20, random_state=0)
+model = DecisionTreeRegressor(max_depth=MAX_DEPTH, random_state=RANDOM_STATE)
+model.fit(X_train, y_train)
 
-    regressor = DecisionTreeRegressor(random_state=0)
-    params = {"max_depth": list(range(1, 11))}
-    scoring_fnc = make_scorer(performance_metric)
+print("Features:", list(X.columns))
+print("max_depth:", MAX_DEPTH)
+print(f"Training R2 score: {r2_score(y_train, model.predict(X_train)):.3f}")
+print(f"Testing R2 score:  {r2_score(y_test, model.predict(X_test)):.3f}")
 
-    grid = GridSearchCV(regressor, params, scoring=scoring_fnc, cv=cv_sets)
-    grid = grid.fit(X, y)
-    return grid.best_estimator_
-
-
-if __name__ == "__main__":
-    data = pd.read_csv("housing.csv")
-    prices = data["MEDV"]
-    features = data.drop("MEDV", axis=1)  # columns: RM, LSTAT, PTRATIO
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        features, prices, test_size=0.2, random_state=1
-    )
-
-    reg = fit_model(X_train, y_train)
-    print("Feature order:", list(features.columns))
-    print("Optimal max_depth:", reg.get_params()["max_depth"])
-    print("R2 on test set: {:.3f}".format(performance_metric(y_test, reg.predict(X_test))))
-
-    joblib.dump(reg, "model.pkl")
-    print("Saved model.pkl")
+joblib.dump(model, MODEL_PATH)
+print(f"Saved {MODEL_PATH}")

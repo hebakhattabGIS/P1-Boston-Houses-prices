@@ -11,7 +11,7 @@ MODEL_PATH = r"Model\model.pkl"          # your saved model (joblib or pickle)
 DATA_PATH = r"Data\housing.csv"         # Boston housing CSV (used only for the charts)
 FEATURES = ["RM", "LSTAT", "PTRATIO"]  # MUST match the order used in training
 TARGET = "MEDV"                   # target column in the CSV
-PRICE_SCALE = 1                   # housing.csv already stores MEDV in dollars
+#PRICE_SCALE = 1                   # housing.csv already stores MEDV in dollars
 # ----------------------------------------------------------------------
 
 st.set_page_config(page_title="Boston Housing Price Prediction", page_icon="🏠", layout="wide")
@@ -27,7 +27,7 @@ def load_data():
     try:
         df = pd.read_csv(DATA_PATH)
         df = df[FEATURES + [TARGET]].dropna()
-        df["Price"] = df[TARGET] * PRICE_SCALE
+        df["Price"] = df[TARGET] 
         return df
     except Exception:
         return None
@@ -45,7 +45,7 @@ ptratio = st.sidebar.slider("Student-teacher ratio (PTRATIO)", 10.0, 25.0, 18.0,
 
 if st.sidebar.button("Predict Home Price", type="primary", use_container_width=True):
     X = pd.DataFrame([[rm, lstat, ptratio]], columns=FEATURES)
-    pred = float(model.predict(X)[0])* PRICE_SCALE
+    pred = float(model.predict(X)[0])
     st.session_state["prediction"] = pred
     st.session_state["inputs"] = {"RM": rm, "LSTAT": lstat, "PTRATIO": ptratio}
 
