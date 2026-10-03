@@ -7,7 +7,7 @@ import streamlit as st
 # ----------------------------------------------------------------------
 # CONFIG - adjust these to match your project
 # ----------------------------------------------------------------------
-MODEL_PATH = r"Model\model.pkl"          # your saved model (joblib or pickle)
+MODEL_PATH = "model.pkl"          # your saved model (joblib or pickle)
 DATA_PATH = r"Data\housing.csv"         # Boston housing CSV (used only for the charts)
 FEATURES = ["RM", "LSTAT", "PTRATIO"]  # MUST match the order used in training
 TARGET = "MEDV"                   # target column in the CSV
